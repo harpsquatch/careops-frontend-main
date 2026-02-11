@@ -1,6 +1,9 @@
 export { default as AddPatientPanel } from './AddPatientPanel';
+export { default as AddVisitPanel } from './AddVisitPanel';
+export { default as AddWorkerPanel } from './AddWorkerPanel';
 export { default as CareProgressChart } from './CareProgressChart';
 export { default as MapboxMap } from './MapboxMap';
+export { default as NotesPanel } from './NotesPanel';
 export { default as NotifyWorkersPanel } from './NotifyWorkersPanel';
 export { default as PatientsPanel } from './PatientsPanel';
 export { default as SettingsPanel } from './SettingsPanel';

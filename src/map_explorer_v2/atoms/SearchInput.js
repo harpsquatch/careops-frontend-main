@@ -10,7 +10,10 @@ const Wrapper = styled.div`
     padding: ${S.md};
     border-radius: 9999px;
     border: 1px solid ${({ theme }) => theme.border};
-    background: ${({ theme }) => theme.bg};
+    background: ${({ $transparent, theme }) => $transparent ? 'transparent' : theme.cardBg};
+    backdrop-filter: ${({ $transparent, theme }) => $transparent ? 'none' : theme.cardBlur};
+    -webkit-backdrop-filter: ${({ $transparent, theme }) => $transparent ? 'none' : theme.cardBlur};
+    width: 100%;
 `;
 
 const Input = styled.input`
@@ -21,6 +24,7 @@ const Input = styled.input`
     font-weight: ${W.regular};
     color: ${({ theme }) => theme.text};
     width: 100%;
+    height: 100%;
     background: transparent;
 
     &::placeholder {
@@ -36,8 +40,8 @@ const IconWrap = styled.div`
     flex-shrink: 0;
 `;
 
-const SearchInput = ({ value, onChange, placeholder = 'Search...', ...rest }) => (
-    <Wrapper>
+const SearchInput = ({ value, onChange, placeholder = 'Search...', transparent = false, ...rest }) => (
+    <Wrapper $transparent={!!transparent}>
         <IconWrap><RiSearchLine /></IconWrap>
         <Input
             type="text"

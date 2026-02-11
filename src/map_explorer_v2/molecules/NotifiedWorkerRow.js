@@ -39,7 +39,7 @@ const Email = styled.span`
 const NotifiedWorkerRow = ({ worker, selected, onToggle }) => (
     <Row>
         <Info>
-            <Avatar size={36} alt={worker.full_name} />
+            <Avatar src={worker.avatar || undefined} size={36} alt={worker.full_name} />
             <Details>
                 <Name>{worker.full_name || 'Unnamed'}</Name>
                 <Email>{worker.email || ''}</Email>

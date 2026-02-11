@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FONT_FAMILY, S, F, W } from '../constants';
 
 const Wrapper = styled.div`
-    padding: ${S.xs} ${S.md};
+    padding: ${S.sm} ${S.md};
     background: ${({ theme }) => theme.cardBg};
     overflow: hidden;
     border-radius: 9999px;
@@ -13,29 +13,36 @@ const Wrapper = styled.div`
     -webkit-backdrop-filter: ${({ theme }) => theme.cardBlur};
     justify-content: center;
     align-items: center;
-    gap: ${S.xs};
+    gap: ${S.sm};
     display: inline-flex;
     cursor: pointer;
-    transition: box-shadow 0.2s ease;
+    pointer-events: auto;
     width: fit-content;
     height: fit-content;
-    padding: ${S.sm} ${S.md};
+    animation: slideIn 0.3s ease-out;
 
-    &:hover {
-        box-shadow: 0px 4px 8px ${({ theme }) => theme.cardShadow};
+    @keyframes slideIn {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 `;
 
-const Inner = styled.div`
-    justify-content: center;
-    align-items: center;
-    gap: ${S.sm};
-    display: flex;
-`;
-
-const Icon = styled.img`
-    width: 32px;
-    height: 30px;
+const Dot = styled.span`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: ${({ $type, theme }) => {
+        if ($type === 'success') return theme.completedColor;
+        if ($type === 'error') return theme.dangerColor;
+        return theme.primary;
+    }};
 `;
 
 const Label = styled.span`
@@ -43,16 +50,14 @@ const Label = styled.span`
     font-size: ${F.md};
     font-family: ${FONT_FAMILY};
     font-weight: ${W.medium};
-    word-wrap: break-word;
+    white-space: nowrap;
 `;
 
-const NavChip = ({ icon, label, onClick }) => (
-    <Wrapper onClick={onClick}>
-        <Inner>
-            {icon && <Icon src={icon} alt={label} />}
-            <div><Label>{label}</Label></div>
-        </Inner>
+const Toast = ({ message, type = 'info', onClose }) => (
+    <Wrapper onClick={onClose}>
+        <Dot $type={type} />
+        <Label>{message}</Label>
     </Wrapper>
 );
 
-export default NavChip;
+export default Toast;

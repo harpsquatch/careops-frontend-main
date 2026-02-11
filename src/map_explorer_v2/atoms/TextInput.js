@@ -14,10 +14,12 @@ const StyledInput = styled.input`
     color: ${({ theme }) => theme.text};
     width: 100%;
     box-sizing: border-box;
-    background: ${({ theme }) => theme.bg};
+    background: transparent;
 
     &:focus {
-        border-color: ${({ theme }) => theme.primary};
+        background: ${({ theme }) => theme.textInputFocusBg};
+        border-color: ${({ theme }) => theme.textInputFocusBorder};
+        color: ${({ theme }) => theme.textInputFocusText};
     }
 
     &:disabled {

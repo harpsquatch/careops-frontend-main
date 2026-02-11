@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { FONT_FAMILY, S, F, W } from '../constants';
-import { CloseButton, Button } from '../atoms';
+import { CloseButton } from '../atoms';
+import { PillButtonTall } from '../atoms/PillButton';
 import { NotifiedWorkerRow } from '../molecules';
 
 const Wrapper = styled.div`
@@ -47,7 +48,7 @@ const List = styled.div`
 
 const Footer = styled.div`
     padding: ${S.md} ${S.xl} ${S.lg};
-    border-top: 1px solid ${({ theme }) => theme.borderLight};
+    border-top: 1px solid ${({ theme }) => theme.border};
     display: flex;
     justify-content: flex-end;
     gap: ${S.sm};
@@ -112,12 +113,12 @@ const NotifyWorkersPanel = ({ visit, workers = [], onNotify, onClose }) => {
                 )}
             </List>
             <Footer>
-                <Button variant="secondary" onClick={onClose}>
+                <PillButtonTall $secondary onClick={onClose}>
                     Cancel
-                </Button>
-                <Button variant="primary" onClick={handleNotify} disabled={selectedCount === 0}>
+                </PillButtonTall>
+                <PillButtonTall onClick={handleNotify} disabled={selectedCount === 0}>
                     Notify {selectedCount > 0 ? `(${selectedCount})` : ''}
-                </Button>
+                </PillButtonTall>
             </Footer>
         </Wrapper>
     );

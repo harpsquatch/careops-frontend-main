@@ -5,18 +5,18 @@ import CloseButton from '../atoms/CloseButton';
 
 const Wrapper = styled.div`
     padding: ${S.xl} ${S.xxl};
-    border-bottom: 1px solid ${({ theme }) => theme.borderLight};
+    border-bottom: 1px solid ${({ theme }) => theme.border};
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
-    background: ${({ theme }) => theme.bg};
+    background: transparent;
 `;
 
 const Title = styled.h2`
     margin: 0;
     font-family: ${FONT_FAMILY};
-    font-size: ${({ $uppercase }) => ($uppercase ? F.xxl : F.xl)};
+    font-size: ${({ $uppercase }) => ($uppercase ? F.xxl : F.lg)};
     font-weight: ${W.semibold};
     color: ${({ $uppercase, theme }) => ($uppercase ? theme.textMuted : theme.text)};
     ${({ $uppercase }) => $uppercase && `

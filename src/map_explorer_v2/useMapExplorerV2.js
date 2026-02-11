@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { selectedUser } from '../store/selectors';
-import { useHayVisionFields, useAddHayFields } from '../hooks/usePatients';
-import { useWorkers, useUpdateWorker } from '../hooks/useWorkers';
+import { useHayVisionFields, useAddHayFields, useUpdateHayField, useDeleteHayField } from '../hooks/usePatients';
+import { useWorkers, useAddWorker, useEditWorker, useUpdateWorker } from '../hooks/useWorkers';
 import { useGetAccountDetails, useUpdateAccountDetails } from '../hooks/useAccounts';
-import { getAllEvents, useUpdateEvent } from '../hooks/useVisits';
+import { getAllEvents, useAddVisit, useUpdateEvent } from '../hooks/useVisits';
 import { useQuery } from 'react-query';
 import { DEFAULT_VIEW } from './constants';
-import { toast } from 'react-toastify';
+import { useToast } from './contexts/ToastContext';
 
-export default function useMapExplorerV2() {
+export default function useMapExplorerV2(authenticated) {
+    const { toast } = useToast();
     const mapRef = useRef(null);
     const didFitBounds = useRef(false);
 
@@ -19,8 +20,9 @@ export default function useMapExplorerV2() {
     const [supportPanelOpen, setSupportPanelOpen] = useState(false);
     const [notifyVisit, setNotifyVisit] = useState(null); // visit being notified
     const [addPatientPanelOpen, setAddPatientPanelOpen] = useState(false);
-    const [isDark, setIsDark] = useState(true);
-    const toggleTheme = useCallback(() => setIsDark((v) => !v), []);
+    const [editingPatient, setEditingPatient] = useState(null); // patient being edited
+    const [addVisitPatient, setAddVisitPatient] = useState(null); // patient for which we're adding a visit
+    const [notesPatient, setNotesPatient] = useState(null); // patient whose notes are being edited
 
 
     const selectedAccId = selectedUser();
@@ -53,20 +55,20 @@ export default function useMapExplorerV2() {
         );
     }, [patients]);
 
-    // Auto-fit on first data load
+    // Zoom into patients only after login
     useEffect(() => {
-        if (!didFitBounds.current && mapRef.current && patients.length > 0) {
+        if (authenticated && !didFitBounds.current && mapRef.current && patients.length > 0) {
             fitToPatients();
             didFitBounds.current = true;
         }
-    }, [patients, fitToPatients]);
+    }, [authenticated, patients, fitToPatients]);
 
     const onMapLoad = useCallback(() => {
-        if (!didFitBounds.current && patients.length > 0) {
+        if (authenticated && !didFitBounds.current && patients.length > 0) {
             fitToPatients();
             didFitBounds.current = true;
         }
-    }, [fitToPatients, patients]);
+    }, [authenticated, fitToPatients, patients]);
 
     // Click a pin -> select + fly to it
     const handlePinClick = useCallback((patient) => {
@@ -82,6 +84,10 @@ export default function useMapExplorerV2() {
     // Workers
     const { isSuccess: isWorkersSuccess, data: workers } = useWorkers();
     const updateWorker = useUpdateWorker();
+    const addWorkerMutation = useAddWorker();
+    const editWorkerMutation = useEditWorker();
+    const [addWorkerPanelOpen, setAddWorkerPanelOpen] = useState(false);
+    const [editingWorker, setEditingWorker] = useState(null);
 
     const handleWorkerToggle = useCallback((worker, category) => {
         const data = { worker, category, id: worker.uid };
@@ -92,6 +98,30 @@ export default function useMapExplorerV2() {
 
     const openWorkersPanel = useCallback(() => setWorkersPanelOpen(true), []);
     const closeWorkersPanel = useCallback(() => setWorkersPanelOpen(false), []);
+
+    const openAddWorkerPanel = useCallback((worker = null) => {
+        setEditingWorker(worker);
+        setAddWorkerPanelOpen(true);
+    }, []);
+
+    const closeAddWorkerPanel = useCallback(() => {
+        setAddWorkerPanelOpen(false);
+        setEditingWorker(null);
+    }, []);
+
+    const handleSaveWorker = useCallback(async (workerData) => {
+        try {
+            if (workerData.uid) {
+                await editWorkerMutation.mutateAsync(workerData);
+            } else {
+                await addWorkerMutation.mutateAsync(workerData);
+            }
+            setAddWorkerPanelOpen(false);
+            setEditingWorker(null);
+        } catch (err) {
+            toast.error(err?.message || 'Failed to save worker');
+        }
+    }, [addWorkerMutation, editWorkerMutation]);
 
     // Settings
     const { data: userDetails } = useGetAccountDetails();
@@ -136,10 +166,15 @@ export default function useMapExplorerV2() {
     // Get selected patient object
     const selectedPatient = patients.find((p) => p.id === selectedId) || null;
 
-    // Filter visits for the selected patient
+    // Filter visits for the selected patient, sorted by date (descending)
     const patientVisits = useMemo(() => {
         if (!selectedId || !allEvents) return [];
-        return allEvents.filter((ev) => ev.field_id === selectedId);
+        const filtered = allEvents.filter((ev) => ev.field_id === selectedId);
+        return filtered.sort((a, b) => {
+            const dateA = a.due_date || a.due || '';
+            const dateB = b.due_date || b.due || '';
+            return dateB.localeCompare(dateA); // descending (newest first)
+        });
     }, [selectedId, allEvents]);
 
     // Notify workers for a visit
@@ -155,20 +190,101 @@ export default function useMapExplorerV2() {
         setNotifyVisit(null);
     }, []);
 
-    // Add Patient
+    // Add / Edit / Delete Patient
     const addHayFields = useAddHayFields();
-    const openAddPatientPanel = useCallback(() => setAddPatientPanelOpen(true), []);
-    const closeAddPatientPanel = useCallback(() => setAddPatientPanelOpen(false), []);
+    const updateHayField = useUpdateHayField();
+    const deleteHayField = useDeleteHayField();
+
+    const openAddPatientPanel = useCallback(() => {
+        setEditingPatient(null);
+        setAddPatientPanelOpen(true);
+    }, []);
+
+    const openEditPatientPanel = useCallback((patient) => {
+        setEditingPatient(patient);
+        setAddPatientPanelOpen(true);
+    }, []);
+
+    const closeAddPatientPanel = useCallback(() => {
+        setAddPatientPanelOpen(false);
+        setEditingPatient(null);
+    }, []);
 
     const handleAddPatient = useCallback(async (patientData) => {
         try {
-            await addHayFields.mutateAsync({ ...patientData, uid: selectedAccId });
-            toast.success('Patient added successfully');
+            if (patientData.id) {
+                // Edit mode
+                await updateHayField.mutateAsync({ ...patientData, uid: selectedAccId });
+                toast.success('Patient updated');
+            } else {
+                // Add mode
+                await addHayFields.mutateAsync({ ...patientData, uid: selectedAccId });
+                toast.success('Patient added');
+            }
             setAddPatientPanelOpen(false);
+            setEditingPatient(null);
         } catch (err) {
-            toast.error(err?.message || 'Failed to add patient');
+            toast.error(err?.message || 'Failed to save patient');
         }
-    }, [addHayFields, selectedAccId]);
+    }, [addHayFields, updateHayField, selectedAccId]);
+
+    const handleDischargePatient = useCallback(async (patient) => {
+        try {
+            await updateHayField.mutateAsync({ id: patient.id, active: false, uid: selectedAccId });
+            toast.success('Patient discharged');
+        } catch (err) {
+            toast.error(err?.message || 'Failed to discharge patient');
+        }
+    }, [updateHayField, selectedAccId]);
+
+    const handleDeletePatient = useCallback(async (patient) => {
+        try {
+            await deleteHayField.mutateAsync({ id: patient.id, uid: selectedAccId });
+            if (selectedId === patient.id) setSelectedId(null);
+        } catch (err) {
+            toast.error(err?.message || 'Failed to delete patient');
+        }
+    }, [deleteHayField, selectedAccId, selectedId]);
+
+    // Add Visit
+    const addVisit = useAddVisit();
+
+    const openAddVisitPanel = useCallback((patient) => {
+        setAddVisitPatient(patient);
+    }, []);
+
+    const closeAddVisitPanel = useCallback(() => {
+        setAddVisitPatient(null);
+    }, []);
+
+    const handleAddVisit = useCallback(async (visitData) => {
+        try {
+            await addVisit.mutateAsync({ ...visitData, uid: selectedAccId });
+            toast.success('Visit added');
+            setAddVisitPatient(null);
+        } catch (err) {
+            toast.error(err?.message || 'Failed to add visit');
+        }
+    }, [addVisit, selectedAccId]);
+
+    // ─── Notes Panel ───
+    const openNotesPanel = useCallback((patient) => {
+        setNotesPatient(patient);
+    }, []);
+
+    const closeNotesPanel = useCallback(() => {
+        setNotesPatient(null);
+    }, []);
+
+    const handleSaveNotes = useCallback(async ({ id, notes }) => {
+        try {
+            await updateHayField.mutateAsync({ id, notes, uid: selectedAccId });
+            toast.success('Notes saved');
+            setNotesPatient(null);
+        } catch (err) {
+            toast.error(err?.message || 'Failed to save notes');
+        }
+    }, [updateHayField, selectedAccId]);
 
     const handleToggleVisit = useCallback((visit, newStatus) => {
         const payload = { id: visit.id, status: newStatus };
@@ -198,6 +314,13 @@ export default function useMapExplorerV2() {
         closeWorkersPanel,
         workers: isWorkersSuccess ? workers : [],
         handleWorkerToggle,
+        // Add / Edit Worker
+        addWorkerPanelOpen,
+        editingWorker,
+        openAddWorkerPanel,
+        closeAddWorkerPanel,
+        handleSaveWorker,
+        isSavingWorker: addWorkerMutation.isLoading || editWorkerMutation.isLoading,
         // Settings
         settingsPanelOpen,
         openSettingsPanel,
@@ -211,22 +334,35 @@ export default function useMapExplorerV2() {
         closeSupportPanel,
         // Patients
         handlePatientCardClick,
-        // Add Patient
+        // Add / Edit / Delete Patient
+        editingPatient,
         addPatientPanelOpen,
         openAddPatientPanel,
+        openEditPatientPanel,
         closeAddPatientPanel,
         handleAddPatient,
-        isAddingPatient: addHayFields.isLoading,
+        handleDischargePatient,
+        handleDeletePatient,
+        isAddingPatient: addHayFields.isLoading || updateHayField.isLoading,
         // Visits
         patientVisits,
         handleToggleVisit,
+        // Add Visit
+        addVisitPatient,
+        openAddVisitPanel,
+        closeAddVisitPanel,
+        handleAddVisit,
+        isAddingVisit: addVisit.isLoading,
         // Notify
         notifyVisit,
         handleNotifyVisit,
         closeNotifyPanel,
         handleNotifySelected,
-        // Theme
-        isDark,
-        toggleTheme,
+        // Notes
+        notesPatient,
+        openNotesPanel,
+        closeNotesPanel,
+        handleSaveNotes,
+        isSavingNotes: updateHayField.isLoading,
     };
 }

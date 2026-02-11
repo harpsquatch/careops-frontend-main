@@ -21,8 +21,8 @@ const Label = styled.span`
     white-space: nowrap;
 `;
 
-const Badge = ({ children, bg, color }) => (
-    <Pill $bg={bg} $color={color}>
+const Badge = ({ children, bg, color, onClick, style, ...props }) => (
+    <Pill $bg={bg} $color={color} onClick={onClick} style={style} {...props}>
         <Label $color={color}>{children}</Label>
     </Pill>
 );

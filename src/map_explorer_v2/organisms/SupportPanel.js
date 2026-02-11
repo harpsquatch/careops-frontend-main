@@ -85,7 +85,7 @@ const ActionBtn = styled.a`
 const SectionCard = styled.div`
     padding: ${S.lg};
     border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.borderLight};
+    border: 1px solid ${({ theme }) => theme.border};
     background: ${({ theme }) => theme.surface};
     display: flex;
     flex-direction: column;
@@ -151,8 +151,8 @@ const LocationLabel = styled.span`
 
 const LocationAddress = styled.span`
     font-size: ${F.sm};
-    font-weight: ${W.semibold};
-    color: ${({ theme }) => theme.text};
+    font-weight: ${W.regular};
+    color: ${({ theme }) => theme.textSecondary};
     line-height: 1.5;
 `;
 
@@ -167,26 +167,22 @@ const SupportPanel = ({ onClose }) => (
             <PersonRow>
                 <PersonAvatar src={tonyImg} alt="Tony Arro" />
                 <PersonInfo>
-                    <PersonName>Tony Arro</PersonName>
-                    <PersonDetail>+1 (225) 555-0118</PersonDetail>
-                    <PersonDetail>arro@energycurve.com</PersonDetail>
-                    <ActionRow>
-                        <ActionBtn href="tel:+12255550118" title="Call">📞</ActionBtn>
-                        <ActionBtn href="mailto:arro@energycurve.com" title="Email">✉️</ActionBtn>
-                    </ActionRow>
+                    <PersonName>Harpsquatch</PersonName>
+                    <PersonDetail>+91 775115012</PersonDetail>
+                    <PersonDetail>harpreet@harpsquatch.com</PersonDetail>
                 </PersonInfo>
             </PersonRow>
 
             {/* Contact ECT Team */}
             <SectionCard>
-                <SectionTitle>Contact ECT Team</SectionTitle>
+                
                 <SectionText>
                     If you have any request that might concern our team directly,
                     feel free to contact us at:
                 </SectionText>
                 <ContactRow>
-                    <ContactItem>+1 (888) 673-2363</ContactItem>
-                    <ContactItem>support@energycurve.com</ContactItem>
+                    <ContactItem>+1 (828) 789-2823</ContactItem>
+                    <ContactItem>hello@harpsquatch.com</ContactItem>
                 </ContactRow>
             </SectionCard>
 
@@ -195,10 +191,10 @@ const SupportPanel = ({ onClose }) => (
                 <LocationRow>
                     <LocationImg src={LOCATION} alt="Office" />
                     <LocationInfo>
-                        <LocationLabel>Office Location</LocationLabel>
+                        <PersonName>Office Location</PersonName>
                         <LocationAddress>
-                            302 S. Main St.<br />
-                            Archie, Missouri 64725
+                            177A Bleecker Street<br />
+                            Greenwich Village, New york 64725
                         </LocationAddress>
                     </LocationInfo>
                 </LocationRow>

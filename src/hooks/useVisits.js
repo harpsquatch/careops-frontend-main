@@ -9,9 +9,24 @@ export function getAllEvents() {
     return axiosInstance({ method: 'GET', url }).then((r) => r.data);
 }
 
+function createVisit(data) {
+    const { uid, ...body } = data;
+    const url = uid ? `${VISITS}?uid=${uid}` : VISITS;
+    return axiosInstance({ method: 'POST', url, data: body }).then((r) => r.data);
+}
+
 function updateVisit(data) {
     const { id, ...body } = data;
     return axiosInstance({ method: 'PUT', url: `${VISITS}/${id}`, data: body }).then((r) => r.data);
+}
+
+export function useAddVisit() {
+    const queryClient = useQueryClient();
+    return useMutation(createVisit, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('allEvents');
+        },
+    });
 }
 
 export function useUpdateEvent() {

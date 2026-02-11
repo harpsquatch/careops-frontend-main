@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { FONT_FAMILY, NAV_ITEMS, S } from './constants';
 import { light, dark } from './themes';
 import { TopBar, PatientPin } from './molecules';
-import { MapboxMap, PatientsPanel, WorkersPanel, SettingsPanel, SupportPanel, VisitsPanel, NotifyWorkersPanel, AddPatientPanel } from './organisms';
+import { MapboxMap, PatientsPanel, WorkersPanel, SettingsPanel, SupportPanel, VisitsPanel, NotifyWorkersPanel, AddPatientPanel, AddVisitPanel, NotesPanel } from './organisms';
 import { NavChip, ThemeToggle } from './atoms';
+import { ToastProvider } from './contexts/ToastContext';
+import LoginScreen from './LoginScreen';
 import useMapExplorerV2 from './useMapExplorerV2';
+import { verifyToken, logout as clearToken } from '../services/authService';
 
 const GlobalReset = createGlobalStyle`
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,7 +48,9 @@ const LeftPanel = styled.div`
 const PanelContainer = styled.div`
     width: 380px;
     max-height: calc(100vh - 88px);
-    overflow: hidden;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
 `;
 
@@ -89,8 +94,9 @@ const Backdrop = styled.div`
 
 const ModalCard = styled.div`
     width: 420px;
-    max-height: 80vh;
+    max-height: 95vh;
     background: ${({ theme }) => theme.bg};
+    backdrop-filter: ${({ theme }) => theme.bgBlur};
     border-radius: 16px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
@@ -98,7 +104,7 @@ const ModalCard = styled.div`
     flex-direction: column;
 `;
 
-const MapExplorerV2 = () => {
+const MapExplorerV2Content = ({ isDark, toggleTheme, authenticated, authChecked, onLogin, onLogout }) => {
     const {
         mapRef,
         viewState,
@@ -112,6 +118,12 @@ const MapExplorerV2 = () => {
         closeWorkersPanel,
         workers,
         handleWorkerToggle,
+        addWorkerPanelOpen,
+        editingWorker,
+        openAddWorkerPanel,
+        closeAddWorkerPanel,
+        handleSaveWorker,
+        isSavingWorker,
         settingsPanelOpen,
         openSettingsPanel,
         closeSettingsPanel,
@@ -129,22 +141,34 @@ const MapExplorerV2 = () => {
         handleNotifyVisit,
         closeNotifyPanel,
         handleNotifySelected,
+        editingPatient,
         addPatientPanelOpen,
         openAddPatientPanel,
+        openEditPatientPanel,
         closeAddPatientPanel,
         handleAddPatient,
+        handleDischargePatient,
+        handleDeletePatient,
         isAddingPatient,
-        isDark,
-        toggleTheme,
-    } = useMapExplorerV2();
+        addVisitPatient,
+        openAddVisitPanel,
+        closeAddVisitPanel,
+        handleAddVisit,
+        isAddingVisit,
+        notesPatient,
+        openNotesPanel,
+        closeNotesPanel,
+        handleSaveNotes,
+        isSavingNotes,
+    } = useMapExplorerV2(authenticated);
 
     return (
-        <ThemeProvider theme={isDark ? dark : light}>
+        <>
         <GlobalReset />
         <Page>
-            {/* Layer 1 — full-screen map */}
-            <MapboxMap mapRef={mapRef} viewState={viewState} onMove={onMove} onLoad={onMapLoad}>
-                {patients.map((patient) => (
+            {/* Layer 1 — full-screen map (always rendered) */}
+            <MapboxMap mapRef={mapRef} viewState={viewState} onMove={onMove} onLoad={onMapLoad} isDark={isDark}>
+                {authenticated && patients.map((patient) => (
                     <PatientPin
                         key={patient.id}
                         patient={patient}
@@ -154,107 +178,187 @@ const MapExplorerV2 = () => {
                 ))}
             </MapboxMap>
 
-            {/* Layer 2 — floating top bar */}
-            <TopBar>
-                {NAV_ITEMS.map((item, index) => {
-                    const actions = {
-                        openWorkersPanel,
-                        settings: openSettingsPanel,
-                        support: openSupportPanel,
-                    };
-                    return (
-                        <NavChip
-                            key={index}
-                            icon={item.icon}
-                            label={item.label}
-                            onClick={actions[item.action] || undefined}
-                        />
-                    );
-                })}
-                <ThemeToggle isDark={isDark} onClick={toggleTheme} />
-            </TopBar>
+            {/* Login overlay — sits on top of the map when not authenticated */}
+            {authChecked && !authenticated && <LoginScreen onLogin={onLogin} />}
 
-            {/* Layer 3 — floating patients panel on left */}
-            <LeftPanel>
-                <PanelContainer>
-                    <PatientsPanel
-                        patients={patients}
-                        onPatientClick={handlePatientCardClick}
-                        onAddPatient={openAddPatientPanel}
-                    />
-                </PanelContainer>
-            </LeftPanel>
+            {/* Everything below only shows after login */}
+            {authenticated && (
+                <>
+                    {/* Layer 2 — floating top bar */}
+                    <TopBar>
+                        {NAV_ITEMS.map((item, index) => {
+                            const actions = {
+                                openWorkersPanel,
+                                settings: openSettingsPanel,
+                                support: openSupportPanel,
+                            };
+                            return (
+                                <NavChip
+                                    key={index}
+                                    icon={item.icon}
+                                    label={item.label}
+                                    onClick={actions[item.action] || undefined}
+                                />
+                            );
+                        })}
+                        <ThemeToggle isDark={isDark} onClick={toggleTheme} />
+                    </TopBar>
 
-            {/* Layer 4 — floating right panel (when patient selected) */}
-            {selectedPatient && (
-                <RightPanel>
-                    <RightStack>
-                        <VisitsPanel
-                            patient={selectedPatient}
-                            visits={patientVisits}
-                            onToggleComplete={handleToggleVisit}
-                            onNotify={handleNotifyVisit}
-                        />
-                    </RightStack>
-                </RightPanel>
-            )}
+                    {/* Layer 3 — floating patients panel on left */}
+                    <LeftPanel>
+                        <PanelContainer>
+                            <PatientsPanel
+                                patients={patients}
+                                onPatientClick={handlePatientCardClick}
+                                onAddPatient={openAddPatientPanel}
+                                onEditPatient={openEditPatientPanel}
+                                onAddVisit={openAddVisitPanel}
+                                onDischargePatient={handleDischargePatient}
+                                onDeletePatient={handleDeletePatient}
+                                onOpenNotes={openNotesPanel}
+                            />
+                        </PanelContainer>
+                    </LeftPanel>
 
-            {/* Modals */}
-            {workersPanelOpen && (
-                <Backdrop onClick={closeWorkersPanel}>
-                    <ModalCard onClick={(e) => e.stopPropagation()}>
-                        <WorkersPanel
-                            title="Nurses"
-                            workers={workers}
-                            onToggle={handleWorkerToggle}
-                            onClose={closeWorkersPanel}
-                        />
-                    </ModalCard>
-                </Backdrop>
-            )}
-            {settingsPanelOpen && (
-                <Backdrop onClick={closeSettingsPanel}>
-                    <ModalCard onClick={(e) => e.stopPropagation()}>
-                        <SettingsPanel
-                            userDetails={userDetails}
-                            onSave={handleSettingsSave}
-                            onClose={closeSettingsPanel}
-                            isSaving={isSavingSettings}
-                        />
-                    </ModalCard>
-                </Backdrop>
-            )}
-            {supportPanelOpen && (
-                <Backdrop onClick={closeSupportPanel}>
-                    <ModalCard onClick={(e) => e.stopPropagation()}>
-                        <SupportPanel onClose={closeSupportPanel} />
-                    </ModalCard>
-                </Backdrop>
-            )}
-            {notifyVisit && (
-                <Backdrop onClick={closeNotifyPanel}>
-                    <ModalCard onClick={(e) => e.stopPropagation()}>
-                        <NotifyWorkersPanel
-                            visit={notifyVisit}
-                            workers={workers}
-                            onNotify={handleNotifySelected}
-                            onClose={closeNotifyPanel}
-                        />
-                    </ModalCard>
-                </Backdrop>
-            )}
-            {addPatientPanelOpen && (
-                <Backdrop onClick={closeAddPatientPanel}>
-                    <ModalCard onClick={(e) => e.stopPropagation()}>
-                        <AddPatientPanel
-                            onSave={handleAddPatient}
-                            onClose={closeAddPatientPanel}
-                            isSaving={isAddingPatient}
-                        />
-                    </ModalCard>
-                </Backdrop>
+                    {/* Layer 4 — floating right panel (when patient selected) */}
+                    {selectedPatient && (
+                        <RightPanel>
+                            <RightStack>
+                                <VisitsPanel
+                                    patient={selectedPatient}
+                                    visits={patientVisits}
+                                    onToggleComplete={handleToggleVisit}
+                                    onNotify={handleNotifyVisit}
+                                />
+                            </RightStack>
+                        </RightPanel>
+                    )}
+
+                    {/* Modals */}
+                    {workersPanelOpen && (
+                        <Backdrop onClick={closeWorkersPanel}>
+                            <ModalCard style={{ width: addWorkerPanelOpen ? 720 : 420, transition: 'width 0.3s ease' }} onClick={(e) => e.stopPropagation()}>
+                                <WorkersPanel
+                                    title="Nurses"
+                                    workers={workers}
+                                    onToggle={handleWorkerToggle}
+                                    onClose={closeWorkersPanel}
+                                    formOpen={addWorkerPanelOpen}
+                                    editingWorker={editingWorker}
+                                    onOpenForm={openAddWorkerPanel}
+                                    onCloseForm={closeAddWorkerPanel}
+                                    onSaveWorker={handleSaveWorker}
+                                    isSavingWorker={isSavingWorker}
+                                />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {settingsPanelOpen && (
+                        <Backdrop onClick={closeSettingsPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <SettingsPanel
+                                    userDetails={userDetails}
+                                    onSave={handleSettingsSave}
+                                    onClose={closeSettingsPanel}
+                                    onLogout={onLogout}
+                                    isSaving={isSavingSettings}
+                                />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {supportPanelOpen && (
+                        <Backdrop onClick={closeSupportPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <SupportPanel onClose={closeSupportPanel} />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {notifyVisit && (
+                        <Backdrop onClick={closeNotifyPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <NotifyWorkersPanel
+                                    visit={notifyVisit}
+                                    workers={workers.filter(w => !w.disabled)}
+                                    onNotify={handleNotifySelected}
+                                    onClose={closeNotifyPanel}
+                                />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {addPatientPanelOpen && (
+                        <Backdrop onClick={closeAddPatientPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <AddPatientPanel
+                                    patient={editingPatient}
+                                    onSave={handleAddPatient}
+                                    onClose={closeAddPatientPanel}
+                                    isSaving={isAddingPatient}
+                                />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {addVisitPatient && (
+                        <Backdrop onClick={closeAddVisitPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <AddVisitPanel
+                                    patient={addVisitPatient}
+                                    onSave={handleAddVisit}
+                                    onClose={closeAddVisitPanel}
+                                    isSaving={isAddingVisit}
+                                />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {notesPatient && (
+                        <Backdrop onClick={closeNotesPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <NotesPanel
+                                    patient={notesPatient}
+                                    onSave={handleSaveNotes}
+                                    onClose={closeNotesPanel}
+                                    isSaving={isSavingNotes}
+                                />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                </>
             )}
         </Page>
+        </>
+    );
+};
+
+const MapExplorerV2 = () => {
+    const [isDark, setIsDark] = useState(true);
+    const [authenticated, setAuthenticated] = useState(false);
+    const [authChecked, setAuthChecked] = useState(false);
+    const toggleTheme = useCallback(() => setIsDark((v) => !v), []);
+    const handleLogin = useCallback(() => setAuthenticated(true), []);
+    const handleLogout = useCallback(() => {
+        clearToken();
+        setAuthenticated(false);
+    }, []);
+
+    /* On mount, check if a valid JWT already exists in localStorage */
+    useEffect(() => {
+        verifyToken().then((result) => {
+            if (result?.valid) setAuthenticated(true);
+            setAuthChecked(true);
+        });
+    }, []);
+
+    return (
+        <ThemeProvider theme={isDark ? dark : light}>
+            <ToastProvider>
+                <MapExplorerV2Content
+                    isDark={isDark}
+                    toggleTheme={toggleTheme}
+                    authenticated={authenticated}
+                    authChecked={authChecked}
+                    onLogin={handleLogin}
+                    onLogout={handleLogout}
+                />
+            </ToastProvider>
         </ThemeProvider>
     );
 };

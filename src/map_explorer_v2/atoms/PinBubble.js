@@ -13,6 +13,8 @@ const PinBubble = styled.div`
     user-select: none;
 
     background: ${(p) => (p.$active ? p.theme.primary : p.theme.bg)};
+    backdrop-filter: ${({ theme }) => theme.cardBlur};
+    -webkit-backdrop-filter: ${({ theme }) => theme.cardBlur};
     color: ${(p) => (p.$active ? p.theme.btnColor : p.theme.text)};
     border: 1.5px solid ${(p) => (p.$active ? p.theme.primary : p.theme.border)};
     transform: ${(p) => (p.$active ? 'scale(1.05)' : 'scale(1)')};

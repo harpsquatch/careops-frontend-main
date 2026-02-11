@@ -6,6 +6,12 @@ export const light = {
     surface:            '#fafafa',
     surfaceHover:       '#f0f0f0',
 
+    /* Menu */
+    menuBg:             'rgb(255, 255, 255)',
+    menuOutline:        'rgba(0, 0, 0, 0.15)',
+    menuShadow:         'rgba(0, 0, 0, 0.25)',
+    menuBlur:           'blur(10px)',
+
     /* Card */
     cardBg:             'white',
     cardOutline:        '#D8D8D8',
@@ -68,13 +74,30 @@ export const light = {
 
 export const dark = {
     /* Surfaces */
-    bg:                 '#1A1A1E',
-    surface:            '#2A2A32',
-    surfaceHover:       '#333340',
+    bg:                 'rgba(0, 0, 0, 0.4)',
+    surface:            'rgba(0, 0, 0, 0)',
+    surfaceHover:       'rgb(32, 32, 32)',
+    bgBlur:             'blur(10px)',
+    surfaceBlur:        'blur(10px)',
+
+    /* Menu */
+    menuBg:             'rgb(28, 28, 28)',
+    menuOutline:        'rgba(255, 255, 255, 0.15)',
+    menuShadow:         'rgba(0, 0, 0, 0.6)',
+    menuBlur:           'blur(10px)',
+
+    /* Text Input */
+    textInputBg:        'rgba(0, 0, 0, 0.07)',
+    textInputBorder:    'rgba(126, 126, 126, 0.08)',
+    textInputText:      '#E4E4E8',
+    textInputPlaceholder: '#7C7C86',
+    textInputFocusBg:    'rgba(46, 46, 46, 0.2)',
+    textInputFocusBorder: 'rgba(126, 126, 126, 0.23)',
+    textInputFocusText:   '#E4E4E8',
 
     /* Card */
-    cardBg:             'rgba(37, 37, 37, 0.5)',
-    cardOutline:        '#5B5B5B',
+    cardBg:             'rgba(0, 0, 0, 0.5)',
+    cardOutline:        'rgba(255, 255, 255, 0.15)',
     cardShadow:         'rgba(0, 0, 0, 0.6)',
     cardBlur:           'blur(10px)',
 
@@ -84,7 +107,7 @@ export const dark = {
     textMuted:          '#7C7C86',
 
     /* Borders */
-    border:             '#444',
+    border:             'rgba(255, 255, 255, 0.08)',
     borderLight:        '#3A3A42',
 
     /* Brand */

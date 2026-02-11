@@ -1,6 +1,6 @@
 import { PATIENTS } from '../config';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { toast } from 'react-toastify';
+import { useToast } from '../map_explorer_v2/contexts/ToastContext';
 import axiosInstance from '../services/axiosInstance';
 
 async function getPatients(uid) {
@@ -33,6 +33,7 @@ export function useHayVisionFields(selectedAccId) {
 
 export const useAddHayFields = () => {
     const queryClient = useQueryClient();
+    const { toast } = useToast();
     return useMutation(createPatient, {
         onSuccess: () => queryClient.invalidateQueries('hayVisionFields'),
         onError: (err) => toast.error(err?.response?.data?.detail || 'Failed to add patient'),
@@ -48,6 +49,7 @@ export const useUpdateHayField = () => {
 
 export const useDeleteHayField = () => {
     const queryClient = useQueryClient();
+    const { toast } = useToast();
     return useMutation(deletePatient, {
         onSuccess: () =>
             queryClient.invalidateQueries('hayVisionFields').then(() => toast.success('Deleted')),

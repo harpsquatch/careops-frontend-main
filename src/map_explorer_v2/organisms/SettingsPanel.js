@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FONT_FAMILY, S } from '../constants';
-import { Button, FormLabel } from '../atoms';
+import { FormLabel } from '../atoms';
+import { PillButtonTall } from '../atoms/PillButton';
 import { PanelHeader, FormField, Counter } from '../molecules';
 
 /* ─── Organism layout ─── */
@@ -30,7 +31,7 @@ const FieldGroup = styled.div`
 
 const Footer = styled.div`
     padding: ${S.lg} ${S.xxl};
-    border-top: 1px solid ${({ theme }) => theme.borderLight};
+    border-top: 1px solid ${({ theme }) => theme.border};
     display: flex;
     justify-content: flex-end;
     gap: ${S.md};
@@ -38,7 +39,7 @@ const Footer = styled.div`
 
 /* ─── Component ─── */
 
-const SettingsPanel = ({ userDetails, onSave, onClose, isSaving }) => {
+const SettingsPanel = ({ userDetails, onSave, onClose, onLogout, isSaving }) => {
     const [accountName, setAccountName] = useState('');
     const [accountEmail, setAccountEmail] = useState('');
     const [notifyCounter, setNotifyCounter] = useState(0);
@@ -100,10 +101,11 @@ const SettingsPanel = ({ userDetails, onSave, onClose, isSaving }) => {
             </Body>
 
             <Footer>
-                <Button variant="secondary" onClick={handleReset}>Reset</Button>
-                <Button onClick={handleSave} disabled={isSaving}>
+                <PillButtonTall $secondary onClick={onLogout}>Logout</PillButtonTall>
+                <PillButtonTall $secondary onClick={handleReset}>Reset</PillButtonTall>
+                <PillButtonTall onClick={handleSave} disabled={isSaving}>
                     {isSaving ? 'Saving…' : 'Save'}
-                </Button>
+                </PillButtonTall>
             </Footer>
         </Wrapper>
     );

@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { FONT_FAMILY, S, F, W } from '../constants';
-import { SearchInput, CounterButton } from '../atoms';
+import { SearchInput } from '../atoms';
+import { PillButtonTall } from '../atoms/PillButton';
 import { PatientListCard } from '../molecules';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-height: 100%;
+    max-height: calc(100vh - 88px);
     font-family: ${FONT_FAMILY};
     gap: ${S.md};
     box-sizing: border-box;
@@ -17,16 +18,10 @@ const Wrapper = styled.div`
 const SearchArea = styled.div`
     padding: 0 ${S.sm};
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: ${S.sm};
     width: 100%;
     box-sizing: border-box;
-`;
-
-const AddButton = styled(CounterButton)`
-    font-size: ${F.xxl};
-    font-weight: ${W.regular};
-    flex-shrink: 0;
 `;
 
 const List = styled.div`
@@ -38,6 +33,10 @@ const List = styled.div`
     gap: ${S.md};
     width: 100%;
     box-sizing: border-box;
+
+    scrollbar-width: none;           /* Firefox */
+    -ms-overflow-style: none;        /* IE/Edge */
+    &::-webkit-scrollbar { display: none; }  /* Chrome/Safari */
 `;
 
 const Empty = styled.p`
@@ -47,7 +46,7 @@ const Empty = styled.p`
     padding: ${S.xxl} 0;
 `;
 
-const PatientsPanel = ({ patients = [], onPatientClick, onAddPatient }) => {
+const PatientsPanel = ({ patients = [], onPatientClick, onAddPatient, onEditPatient, onAddVisit, onDischargePatient, onDeletePatient, onOpenNotes }) => {
     const [search, setSearch] = useState('');
 
     const filtered = useMemo(() => {
@@ -69,7 +68,7 @@ const PatientsPanel = ({ patients = [], onPatientClick, onAddPatient }) => {
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search patient..."
                 />
-                <AddButton onClick={onAddPatient} title="Add patient">+</AddButton>
+                <PillButtonTall onClick={onAddPatient}>Add Patients</PillButtonTall>
             </SearchArea>
 
             <List>
@@ -79,6 +78,11 @@ const PatientsPanel = ({ patients = [], onPatientClick, onAddPatient }) => {
                             key={patient.id}
                             patient={patient}
                             onClick={onPatientClick}
+                            onEdit={onEditPatient}
+                            onAddVisit={onAddVisit}
+                            onDischarge={onDischargePatient}
+                            onDelete={onDeletePatient}
+                            onOpenNotes={onOpenNotes}
                         />
                     ))
                 ) : (

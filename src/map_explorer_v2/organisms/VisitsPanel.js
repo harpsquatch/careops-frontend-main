@@ -40,7 +40,6 @@ const ChartArea = styled.div`
 `;
 
 const List = styled.div`
-    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
@@ -50,6 +49,14 @@ const List = styled.div`
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+
+    /* Show 3 full cards + peek of 4th to hint scrollability */
+    max-height: 310px;
+
+    /* Hidden scrollbar (same as PatientsPanel) */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { display: none; }
 `;
 
 const Empty = styled.p`

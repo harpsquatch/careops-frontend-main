@@ -10,7 +10,7 @@ const CounterButton = styled.button`
     font-size: ${F.xl};
     cursor: pointer;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     color: ${({ theme }) => theme.text};
     transition: background 0.15s;

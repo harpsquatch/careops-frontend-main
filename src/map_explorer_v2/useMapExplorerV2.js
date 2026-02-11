@@ -289,8 +289,12 @@ export default function useMapExplorerV2(authenticated) {
     const handleToggleVisit = useCallback((visit, newStatus) => {
         const payload = { id: visit.id, status: newStatus };
         if (newStatus === 2) {
+            // Mark as completed - record completion date
             const now = new Date();
             payload.completed_date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        } else if (newStatus === 1) {
+            // Mark as incomplete - clear completion date
+            payload.completed_date = "";
         }
         updateEvent.mutateAsync(payload).catch((err) => {
             toast.error(err?.message || 'Failed to update visit');

@@ -100,8 +100,8 @@ const Form = styled.form`
 `;
 
 const LoginLabel = styled(FormLabel)`
-    letter-spacing: 1px;
     margin-bottom: -4px;
+    
     font-weight: ${W.medium};
     color: ${({ theme }) => theme.textSecondary};
     font-size: ${F.md};

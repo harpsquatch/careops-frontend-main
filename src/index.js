@@ -1,0 +1,33 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import store from './store/store';
+import App from './App';
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            retry: 1,
+        },
+    },
+});
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+root.render(
+    <React.StrictMode>
+        <Provider store={store}>
+            <QueryClientProvider client={queryClient}>
+                <App />
+                <ToastContainer position="bottom-right" autoClose={3000} />
+            </QueryClientProvider>
+        </Provider>
+    </React.StrictMode>
+);
+

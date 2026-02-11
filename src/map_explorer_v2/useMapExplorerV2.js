@@ -27,7 +27,7 @@ export default function useMapExplorerV2(authenticated) {
 
     const selectedAccId = selectedUser();
     const { isLoading, data: hayFields } = useHayVisionFields(selectedAccId);
-    const patients = useMemo(() => hayFields || [], [hayFields]);
+    const patients = useMemo(() => (Array.isArray(hayFields) ? hayFields : []), [hayFields]);
 
     const onMove = (evt) => setViewState(evt.viewState);
 
@@ -168,7 +168,7 @@ export default function useMapExplorerV2(authenticated) {
 
     // Filter visits for the selected patient, sorted by date (descending)
     const patientVisits = useMemo(() => {
-        if (!selectedId || !allEvents) return [];
+        if (!selectedId || !Array.isArray(allEvents)) return [];
         const filtered = allEvents.filter((ev) => ev.field_id === selectedId);
         return filtered.sort((a, b) => {
             const dateA = a.due_date || a.due || '';

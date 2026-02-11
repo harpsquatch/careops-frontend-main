@@ -56,29 +56,7 @@ const PersonDetail = styled.span`
     color: ${({ theme }) => theme.textMuted};
 `;
 
-const ActionRow = styled.div`
-    display: flex;
-    gap: ${S.sm};
-    margin-top: ${S.xs};
-`;
-
-const ActionBtn = styled.a`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.accentBg};
-    color: ${({ theme }) => theme.primary};
-    font-size: ${F.lg};
-    text-decoration: none;
-    transition: background 0.15s;
-
-    &:hover {
-        background: ${({ theme }) => theme.accentHoverBg};
-    }
-`;
+/* ActionRow and ActionBtn removed — unused */
 
 /* ─── Section card ─── */
 
@@ -92,13 +70,7 @@ const SectionCard = styled.div`
     gap: ${S.sm};
 `;
 
-const SectionTitle = styled.span`
-    font-size: ${F.sm};
-    font-weight: ${W.semibold};
-    color: ${({ theme }) => theme.textMuted};
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-`;
+/* SectionTitle removed — unused */
 
 const SectionText = styled.span`
     font-size: ${F.sm};
@@ -141,13 +113,7 @@ const LocationInfo = styled.div`
     gap: ${S.xs};
 `;
 
-const LocationLabel = styled.span`
-    font-size: ${F.sm};
-    font-weight: ${W.semibold};
-    color: ${({ theme }) => theme.textMuted};
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-`;
+/* LocationLabel removed — unused */
 
 const LocationAddress = styled.span`
     font-size: ${F.sm};

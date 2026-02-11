@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import MapGL, { NavigationControl } from 'react-map-gl/mapbox';
+import MapGL from 'react-map-gl/mapbox';
 import { MAPBOX_TOKEN } from '../../config';
 import { MAPBOX_STYLE_DARK, MAPBOX_STYLE_LIGHT, FONT_FAMILY, F } from '../constants';
 import 'mapbox-gl/dist/mapbox-gl.css';

@@ -94,7 +94,7 @@ export default function useMapExplorerV2(authenticated) {
         updateWorker.mutateAsync(data).catch((err) => {
             toast.error(err.message);
         });
-    }, [updateWorker]);
+    }, [updateWorker, toast]);
 
     const openWorkersPanel = useCallback(() => setWorkersPanelOpen(true), []);
     const closeWorkersPanel = useCallback(() => setWorkersPanelOpen(false), []);
@@ -121,7 +121,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err?.message || 'Failed to save worker');
         }
-    }, [addWorkerMutation, editWorkerMutation]);
+    }, [addWorkerMutation, editWorkerMutation, toast]);
 
     // Settings
     const { data: userDetails } = useGetAccountDetails();
@@ -155,7 +155,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err.message || 'Failed to save settings');
         }
-    }, [updateAccountDetails, selectedAccId]);
+    }, [updateAccountDetails, selectedAccId, toast]);
 
     // ─── Events / Visits ───
     const { data: allEvents } = useQuery('allEvents', getAllEvents, {
@@ -188,7 +188,7 @@ export default function useMapExplorerV2(authenticated) {
         console.log('Notifying workers:', selectedWorkers, 'for visit:', visit);
         toast.success(`Notified ${selectedWorkers.length} worker(s)`);
         setNotifyVisit(null);
-    }, []);
+    }, [toast]);
 
     // Add / Edit / Delete Patient
     const addHayFields = useAddHayFields();
@@ -226,7 +226,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err?.message || 'Failed to save patient');
         }
-    }, [addHayFields, updateHayField, selectedAccId]);
+    }, [addHayFields, updateHayField, selectedAccId, toast]);
 
     const handleDischargePatient = useCallback(async (patient) => {
         try {
@@ -235,7 +235,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err?.message || 'Failed to discharge patient');
         }
-    }, [updateHayField, selectedAccId]);
+    }, [updateHayField, selectedAccId, toast]);
 
     const handleDeletePatient = useCallback(async (patient) => {
         try {
@@ -244,7 +244,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err?.message || 'Failed to delete patient');
         }
-    }, [deleteHayField, selectedAccId, selectedId]);
+    }, [deleteHayField, selectedAccId, selectedId, toast]);
 
     // Add Visit
     const addVisit = useAddVisit();
@@ -265,7 +265,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err?.message || 'Failed to add visit');
         }
-    }, [addVisit, selectedAccId]);
+    }, [addVisit, selectedAccId, toast]);
 
     // ─── Notes Panel ───
     const openNotesPanel = useCallback((patient) => {
@@ -284,7 +284,7 @@ export default function useMapExplorerV2(authenticated) {
         } catch (err) {
             toast.error(err?.message || 'Failed to save notes');
         }
-    }, [updateHayField, selectedAccId]);
+    }, [updateHayField, selectedAccId, toast]);
 
     const handleToggleVisit = useCallback((visit, newStatus) => {
         const payload = { id: visit.id, status: newStatus };
@@ -295,7 +295,7 @@ export default function useMapExplorerV2(authenticated) {
         updateEvent.mutateAsync(payload).catch((err) => {
             toast.error(err?.message || 'Failed to update visit');
         });
-    }, [updateEvent]);
+    }, [updateEvent, toast]);
 
     return {
         mapRef,

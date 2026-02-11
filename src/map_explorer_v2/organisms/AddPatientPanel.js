@@ -99,11 +99,11 @@ const AvatarHint = styled.span`
     font-family: ${FONT_FAMILY};
 `;
 
-const LocationHint = styled.span`
+/* const LocationHint = styled.span`
     color: ${({ theme }) => theme.textMuted};
     font-size: ${F.xs};
     font-family: ${FONT_FAMILY};
-`;
+`; */
 
 const LatLngRow = styled.div`
     display: flex;

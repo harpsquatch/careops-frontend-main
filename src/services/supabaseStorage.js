@@ -11,27 +11,7 @@ const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || 'https://sykoniyfqdag
 const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5a29uaXlmcWRhZ2dtdGNhcmtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMDczMTcsImV4cCI6MjA3Mjg4MzMxN30.7O9pKKN4Toyrbx3bDjZnq4U88MRy357FxnbIbErZ-aw';
 const BUCKET = 'patient-avatars';
 
-/**
- * Try to create the bucket if it doesn't exist (may fail if anon key lacks permissions).
- */
-async function ensureBucketExists() {
-    try {
-        const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: BUCKET,
-                public: true,
-            }),
-        });
-        // Ignore errors - bucket might already exist or we lack permissions
-    } catch (err) {
-        // Silently fail - user will need to create bucket manually
-    }
-}
+/* ensureBucketExists removed — bucket must be created manually in Supabase dashboard */
 
 /**
  * Upload a file to Supabase storage and return its public URL.

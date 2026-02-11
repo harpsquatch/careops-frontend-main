@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { FONT_FAMILY, S, F, W } from '../constants';
+import { FONT_FAMILY, S } from '../constants';
 import { SearchInput } from '../atoms';
 import { PillButtonTall } from '../atoms/PillButton';
 import { PatientListCard } from '../molecules';

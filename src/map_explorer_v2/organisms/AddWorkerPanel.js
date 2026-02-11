@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FONT_FAMILY, S } from '../constants';
-import { FormLabel } from '../atoms';
 import { PillButtonTall } from '../atoms/PillButton';
 import { PanelHeader, FormField } from '../molecules';
 

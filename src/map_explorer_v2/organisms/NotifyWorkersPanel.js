@@ -1,30 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { FONT_FAMILY, S, F, W } from '../constants';
-import { CloseButton } from '../atoms';
 import { PillButtonTall } from '../atoms/PillButton';
-import { NotifiedWorkerRow } from '../molecules';
+import { NotifiedWorkerRow, PanelHeader } from '../molecules';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     font-family: ${FONT_FAMILY};
     height: 100%;
-`;
-
-const Header = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: ${S.lg} ${S.xl} ${S.sm};
-`;
-
-const Title = styled.h2`
-    margin: 0;
-    font-family: ${FONT_FAMILY};
-    font-size: ${F.md};
-    font-weight: ${W.medium};
-    color: ${({ theme }) => theme.text};
 `;
 
 const SubText = styled.p`
@@ -93,11 +77,7 @@ const NotifyWorkersPanel = ({ visit, workers = [], onNotify, onClose }) => {
 
     return (
         <Wrapper>
-            <Header>
-                <Title>Select Workers to Notify</Title>
-                {onClose && <CloseButton onClick={onClose}>&times;</CloseButton>}
-            </Header>
-            <SubText>Choose workers to notify for "{visitLabel}"</SubText>
+            <PanelHeader title="Select Workers to Notify" onClose={onClose} />
             <List>
                 {workers.length > 0 ? (
                     workers.map((worker, idx) => (

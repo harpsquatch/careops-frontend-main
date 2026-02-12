@@ -1,6 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
-import logoSvg from '../../static/images/logo.svg';
+import styled, { useTheme } from 'styled-components';
+import logoDark from '../../static/images/logo-darkbg.png';
+import logoLight from '../../static/images/logo-lightbg.png';
 
 const Img = styled.img`
     height: 32px;
@@ -8,7 +9,11 @@ const Img = styled.img`
     display: block;
 `;
 
-const Logo = (props) => <Img src={logoSvg} alt="ECT Vision" {...props} />;
+const Logo = (props) => {
+    const theme = useTheme();
+    const logoSrc = theme.mode === 'dark' ? logoDark : logoLight;
+    return <Img src={logoSrc} alt="CareOps" {...props} />;
+};
 
 export default Logo;
 

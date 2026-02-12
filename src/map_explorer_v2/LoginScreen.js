@@ -91,14 +91,6 @@ const Title = styled.h1`
     animation: ${fadeUp} 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 `;
 
-const Subtitle = styled.p`
-    font-size: ${F.md};
-    color: rgba(255, 255, 255, 0.4);
-    line-height: 1.6;
-    margin-bottom: 36px;
-    animation: ${fadeUp} 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
-`;
-
 const Form = styled.form`
     display: flex;
     flex-direction: column;

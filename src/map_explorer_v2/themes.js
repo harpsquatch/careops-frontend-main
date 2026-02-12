@@ -1,6 +1,7 @@
 /* ─── Shared shape — every key must exist in both themes ─── */
 
 export const light = {
+    mode: 'light',
     /* Surfaces */
     bg:                 '#fff',
     surface:            '#fafafa',
@@ -73,6 +74,7 @@ export const light = {
 };
 
 export const dark = {
+    mode: 'dark',
     /* Surfaces */
     bg:                 'rgba(0, 0, 0, 0.4)',
     surface:            'rgba(0, 0, 0, 0)',

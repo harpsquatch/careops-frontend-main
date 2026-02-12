@@ -132,7 +132,7 @@ const FieldGroup = styled.div`
 /* ─── Component ─── */
 
 const WorkersPanel = ({
-    title = 'NURSES',
+    title = 'Care Partners',
     workers = [],
     onToggle,
     onClose,
@@ -261,7 +261,7 @@ const WorkersPanel = ({
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="nurse@example.com"
+                        placeholder="carepartner@example.com"
                     />
                 </FormBody>
                 <FormFooter>

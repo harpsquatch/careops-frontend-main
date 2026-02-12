@@ -76,7 +76,7 @@ export const CARE_LEVEL_MAP = Object.fromEntries(
 export const NAV_ITEMS = [
     {
         icon: patientsIcon,
-        label: 'Nurse Workers',
+        label: 'Care Partners',
         action: 'openWorkersPanel',
     },
     {

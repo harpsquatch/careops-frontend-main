@@ -75,7 +75,7 @@ const AddWorkerPanel = ({ worker, onSave, onClose, isSaving }) => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="nurse@example.com"
+                    placeholder="carepartner@example.com"
                 />
             </Body>
 

@@ -239,7 +239,7 @@ const MapExplorerV2Content = ({ isDark, toggleTheme, authenticated, authChecked,
                         <Backdrop onClick={closeWorkersPanel}>
                             <ModalCard style={{ width: addWorkerPanelOpen ? 720 : 420, transition: 'width 0.3s ease' }} onClick={(e) => e.stopPropagation()}>
                                 <WorkersPanel
-                                    title="Nurses"
+                                    title="Care Partners"
                                     workers={workers}
                                     onToggle={handleWorkerToggle}
                                     onClose={closeWorkersPanel}

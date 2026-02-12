@@ -5,6 +5,7 @@ import TextInput from './atoms/TextInput';
 import FormLabel from './atoms/FormLabel';
 import { PillButtonTall } from './atoms/PillButton';
 import { login } from '../services/authService';
+import logoDark from '../static/images/logo-darkbg.png';
 
 /* ─── animations ─── */
 
@@ -73,6 +74,13 @@ const ContentLayer = styled.div`
     `}
 `;
 
+const LogoImg = styled.img`
+    height: 40px;
+    width: auto;
+    margin-bottom: 24px;
+    animation: ${fadeUp} 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+`;
+
 const Title = styled.h1`
     font-size: 42px;
     font-weight: ${W.semibold};
@@ -101,7 +109,7 @@ const Form = styled.form`
 
 const LoginLabel = styled(FormLabel)`
     margin-bottom: -4px;
-    
+
     font-weight: ${W.medium};
     color: ${({ theme }) => theme.textSecondary};
     font-size: ${F.md};
@@ -217,14 +225,9 @@ const LoginScreen = ({ onLogin }) => {
 
             <ContentLayer $exiting={exiting}>
 
+                <LogoImg src={logoDark} alt="CareOps" />
 
-                <Title>Monitor.<br />Coordinate.<br />Care.</Title>
-
-                <Subtitle>
-                    Real-time patient tracking and care team<br />
-                    coordination from anywhere in the world.
-                </Subtitle>
-
+                <Title>Care.<br />Monitor.<br />Coordinate.</Title>
                 <Form onSubmit={handleSubmit}>
                     <LoginLabel>Email</LoginLabel>
                     <LoginInput
@@ -256,8 +259,7 @@ const LoginScreen = ({ onLogin }) => {
             </ContentLayer>
 
             <BottomBar $exiting={exiting}>
-                <BottomText>ECT Vision</BottomText>
-                <BottomDot />
+
                 <BottomText>CareOps Platform</BottomText>
                 <BottomDot />
                 <BottomText>2026</BottomText>

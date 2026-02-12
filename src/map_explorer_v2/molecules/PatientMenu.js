@@ -46,9 +46,11 @@ const MenuItem = styled.button`
     }
 `;
 
-const PatientMenu = ({ isOpen, onClose, onEdit, onAddVisit, onDischarge, onDelete, buttonRef }) => {
+const PatientMenu = ({ isOpen, onClose, onEdit, onAddVisit, onDischarge, onDelete, buttonRef, patient }) => {
     const menuRef = useRef(null);
     const [position, setPosition] = useState({ top: 0, right: 0 });
+
+    const isActive = patient?.active !== false; // Default to true if undefined
 
     useEffect(() => {
         if (!isOpen || !buttonRef?.current) return;
@@ -105,7 +107,7 @@ const PatientMenu = ({ isOpen, onClose, onEdit, onAddVisit, onDischarge, onDelet
                 Add Visit
             </MenuItem>
             <MenuItem onClick={() => handleItemClick(onDischarge)}>
-                Discharge
+                {isActive ? 'Discharge' : 'Re-Admit'}
             </MenuItem>
             <MenuItem $danger onClick={() => handleItemClick(onDelete)}>
                 Delete

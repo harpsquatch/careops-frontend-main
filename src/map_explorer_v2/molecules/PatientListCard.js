@@ -111,6 +111,7 @@ const PatientListCard = ({ patient, onClick, onEdit, onAddVisit, onDischarge, on
                     onDischarge={handleDischarge}
                     onDelete={handleDelete}
                     buttonRef={menuButtonRef}
+                    patient={patient}
                 />
             </MenuWrapper>
             <Avatar src={patient.avatar_url || undefined} size={36} alt={patient.field_name} />

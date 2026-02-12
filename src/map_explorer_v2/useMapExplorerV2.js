@@ -229,11 +229,15 @@ export default function useMapExplorerV2(authenticated) {
     }, [addHayFields, updateHayField, selectedAccId, toast]);
 
     const handleDischargePatient = useCallback(async (patient) => {
+        const isActive = patient.active !== false; // Default to true if undefined
+        const newStatus = !isActive; // Toggle
+        const actionText = newStatus ? 'readmitted' : 'discharged';
+        
         try {
-            await updateHayField.mutateAsync({ id: patient.id, active: false, uid: selectedAccId });
-            toast.success('Patient discharged');
+            await updateHayField.mutateAsync({ id: patient.id, active: newStatus, uid: selectedAccId });
+            toast.success(`Patient ${actionText}`);
         } catch (err) {
-            toast.error(err?.message || 'Failed to discharge patient');
+            toast.error(err?.message || `Failed to ${actionText.slice(0, -2)} patient`);
         }
     }, [updateHayField, selectedAccId, toast]);
 

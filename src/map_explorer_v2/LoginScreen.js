@@ -75,9 +75,11 @@ const ContentLayer = styled.div`
 `;
 
 const LogoImg = styled.img`
-    height: 40px;
+    height: 28px;
     width: auto;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    object-fit: contain;
+    align-self: flex-start;
     animation: ${fadeUp} 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
 `;
 
@@ -87,7 +89,8 @@ const Title = styled.h1`
     color: #fff;
     letter-spacing: -0.5px;
     line-height: 1.15;
-    margin-bottom: 12px;
+    margin-bottom: 32px;
+    text-align: left;
     animation: ${fadeUp} 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 `;
 
@@ -96,6 +99,7 @@ const Form = styled.form`
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    margin-top: 8px;
     animation: ${fadeUp} 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
 `;
 

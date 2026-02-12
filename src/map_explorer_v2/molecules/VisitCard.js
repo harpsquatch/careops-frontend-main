@@ -48,8 +48,13 @@ function formatDueDate(dateStr) {
 const VisitCard = ({ visit, onToggleComplete, onNotify }) => {
     const isCompleted = visit.status === 2;
     const dueDate = visit.due_date || visit.due;
-    const formattedDue = formatDueDate(dueDate);
+    const completedDate = visit.completed_date;
     const instructions = visit.text || visit.instructions || 'No instructions provided';
+
+    // Show completion date if completed, otherwise show due date
+    const displayDate = isCompleted && completedDate ? completedDate : dueDate;
+    const formattedDate = formatDueDate(displayDate);
+    const dateLabel = isCompleted && completedDate ? 'Completed on' : 'Due on';
 
     const handleToggle = () => {
         if (onToggleComplete) {
@@ -72,7 +77,7 @@ const VisitCard = ({ visit, onToggleComplete, onNotify }) => {
                 <PillButton $completed={isCompleted} onClick={handleToggle}>
                     {isCompleted ? '✓ Completed' : 'Mark Complete'}
                 </PillButton>
-                {formattedDue && <MutedText>Due on {formattedDue}</MutedText>}
+                {formattedDate && <MutedText>{dateLabel} {formattedDate}</MutedText>}
             </Row>
         </Card>
     );

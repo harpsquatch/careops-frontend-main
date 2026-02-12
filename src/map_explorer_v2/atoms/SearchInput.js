@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     background: ${({ $transparent, theme }) => $transparent ? 'transparent' : theme.cardBg};
     backdrop-filter: ${({ $transparent, theme }) => $transparent ? 'none' : theme.cardBlur};
     -webkit-backdrop-filter: ${({ $transparent, theme }) => $transparent ? 'none' : theme.cardBlur};
+    shadow: ${({ $transparent, theme }) => $transparent ? 'none' : theme.cardShadow};
     width: 100%;
 `;
 

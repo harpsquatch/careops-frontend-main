@@ -9,25 +9,17 @@ const Wrapper = styled.div`
     flex-direction: column;
     font-family: ${FONT_FAMILY};
     height: 100%;
+    gap: ${S.lg};
 `;
 
-const SubText = styled.p`
-    margin: 0;
-    padding: 0 ${S.xl} ${S.md};
-    font-family: ${FONT_FAMILY};
-    font-size: ${F.sm};
-    font-weight: ${W.regular};
-    color: ${({ theme }) => theme.textMuted};
-    line-height: 1.4;
-`;
 
 const List = styled.div`
     flex: 1;
     overflow-y: auto;
-    padding: 0 ${S.xl};
+    padding: 0 ${S.xl} ${S.sm};
     display: flex;
     flex-direction: column;
-    gap: 2px;
+
 `;
 
 const Footer = styled.div`

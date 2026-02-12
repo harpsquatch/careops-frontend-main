@@ -15,6 +15,7 @@ const Shell = styled.div`
     height: 100%;
     transition: width 0.3s ease;
     width: ${({ $formOpen }) => ($formOpen ? '720px' : '420px')};
+    
 `;
 
 /* ─── Left: worker list ─── */
@@ -24,8 +25,9 @@ const ListSide = styled.div`
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: ${S.md};
+    gap: ${S.lg};
     height: 100%;
+    padding: 0 ${S.xs} ${S.xs};
 `;
 
 const SearchArea = styled.div`
@@ -38,7 +40,8 @@ const SearchArea = styled.div`
 const List = styled.div`
     flex: 1;
     overflow-y: auto;
-    padding: 0 ${S.lg} ${S.lg};
+    padding: 0 ${S.sm} ${S.lg};
+
 `;
 
 const Empty = styled.p`

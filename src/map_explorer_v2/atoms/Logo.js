@@ -11,7 +11,7 @@ const Img = styled.img`
 
 const Logo = (props) => {
     const theme = useTheme();
-    const logoSrc = theme.mode === 'dark' ? logoDark : logoLight;
+    const logoSrc = theme.mode === 'dark' ? logoLight : logoDark;
     return <Img src={logoSrc} alt="CareOps" {...props} />;
 };
 

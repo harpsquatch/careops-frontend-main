@@ -5,7 +5,7 @@ import TextInput from './atoms/TextInput';
 import FormLabel from './atoms/FormLabel';
 import { PillButtonTall } from './atoms/PillButton';
 import { login } from '../services/authService';
-import logoDark from '../static/images/logo-darkbg.png';
+import logoDarkMode from '../static/images/logo-darkmode.png';
 
 /* ─── animations ─── */
 
@@ -221,7 +221,7 @@ const LoginScreen = ({ onLogin }) => {
 
             <ContentLayer $exiting={exiting}>
 
-                <LogoImg src={logoDark} alt="CareOps" />
+                <LogoImg src={logoDarkMode} alt="CareOps" />
 
                 <Title>Care.<br />Monitor.<br />Coordinate.</Title>
                 <Form onSubmit={handleSubmit}>

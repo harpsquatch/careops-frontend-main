@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import logoDark from '../../static/images/logo-darkbg.png';
-import logoLight from '../../static/images/logo-lightbg.png';
+import logoDarkMode from '../../static/images/logo-darkmode.png';
+import logoLightMode from '../../static/images/logo-lightmode.png';
 
 const Img = styled.img`
     height: 32px;
@@ -12,10 +12,8 @@ const Img = styled.img`
 const Logo = (props) => {
     const theme = useTheme();
     const isDark = theme.mode === 'dark';
-    // dark mode → light logo (logo-lightbg.png), light mode → dark logo (logo-darkbg.png)
-    const logoSrc = isDark ? logoLight : logoDark;
+    const logoSrc = isDark ? logoDarkMode : logoLightMode;
     return <Img key={isDark ? 'dark' : 'light'} src={logoSrc} alt="CareOps" {...props} />;
 };
 
 export default Logo;
-

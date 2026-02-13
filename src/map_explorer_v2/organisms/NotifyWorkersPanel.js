@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { FONT_FAMILY, S, F, W } from '../constants';
+import { FONT_FAMILY, S, F } from '../constants';
 import { PillButtonTall } from '../atoms/PillButton';
 import { NotifiedWorkerRow, PanelHeader } from '../molecules';
 
@@ -40,8 +40,6 @@ const Empty = styled.p`
 
 const NotifyWorkersPanel = ({ visit, workers = [], onNotify, onClose }) => {
     const [selectedIds, setSelectedIds] = useState(new Set());
-
-    const visitLabel = visit?.text || visit?.instructions || 'this visit';
 
     const handleToggle = (worker) => {
         setSelectedIds((prev) => {

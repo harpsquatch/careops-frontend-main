@@ -11,9 +11,9 @@ const Img = styled.img`
 
 const Logo = (props) => {
     const theme = useTheme();
-    // Check theme mode - default to light if mode is not set
-    const isDark = theme.mode === 'dark' || (!theme.mode && theme.bg?.includes('rgba(0, 0, 0'));
-    const logoSrc = isDark ? logoDark : logoLight;
+    const isDark = theme.mode === 'dark';
+    // dark mode → light logo (logo-lightbg.png), light mode → dark logo (logo-darkbg.png)
+    const logoSrc = isDark ? logoLight : logoDark;
     return <Img key={isDark ? 'dark' : 'light'} src={logoSrc} alt="CareOps" {...props} />;
 };
 

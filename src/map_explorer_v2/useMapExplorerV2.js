@@ -18,6 +18,7 @@ export default function useMapExplorerV2(authenticated) {
     const [workersPanelOpen, setWorkersPanelOpen] = useState(false);
     const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
     const [supportPanelOpen, setSupportPanelOpen] = useState(false);
+    const [patientSummaryPanelOpen, setPatientSummaryPanelOpen] = useState(false);
     const [notifyVisit, setNotifyVisit] = useState(null); // visit being notified
     const [addPatientPanelOpen, setAddPatientPanelOpen] = useState(false);
     const [editingPatient, setEditingPatient] = useState(null); // patient being edited
@@ -133,10 +134,13 @@ export default function useMapExplorerV2(authenticated) {
     // Support
     const openSupportPanel = useCallback(() => setSupportPanelOpen(true), []);
     const closeSupportPanel = useCallback(() => setSupportPanelOpen(false), []);
+    const openPatientSummaryPanel = useCallback(() => setPatientSummaryPanelOpen(true), []);
+    const closePatientSummaryPanel = useCallback(() => setPatientSummaryPanelOpen(false), []);
 
     // Patient card click — select + fly to
     const handlePatientCardClick = useCallback((patient) => {
         setSelectedId(patient.id);
+        setPatientSummaryPanelOpen(false);
         if (patient.lat && patient.lng) {
             mapRef.current?.flyTo({
                 center: [patient.lng, patient.lat],
@@ -305,6 +309,12 @@ export default function useMapExplorerV2(authenticated) {
         });
     }, [updateEvent, toast]);
 
+    useEffect(() => {
+        if (!selectedPatient) {
+            setPatientSummaryPanelOpen(false);
+        }
+    }, [selectedPatient]);
+
     return {
         mapRef,
         viewState,
@@ -340,6 +350,9 @@ export default function useMapExplorerV2(authenticated) {
         supportPanelOpen,
         openSupportPanel,
         closeSupportPanel,
+        patientSummaryPanelOpen,
+        openPatientSummaryPanel,
+        closePatientSummaryPanel,
         // Patients
         handlePatientCardClick,
         // Add / Edit / Delete Patient

@@ -16,3 +16,6 @@ export const ACCOUNT = BASE_URL + '/v1/account';
 // Auth
 export const LOGIN = BASE_URL + '/v1/account/login';
 export const VERIFY_TOKEN = BASE_URL + '/v1/account/verify';
+
+// AI Summary
+export const PATIENT_SUMMARY = (patientId) => `${PATIENTS}/${patientId}/summary`;

@@ -4,6 +4,8 @@ export { default as NotifiedWorkerRow } from './NotifiedWorkerRow';
 export { default as PanelHeader } from './PanelHeader';
 export { default as PatientListCard } from './PatientListCard';
 export { default as PatientPin } from './PatientPin';
+export { default as SummaryMetric } from './SummaryMetric';
+export { default as SummarySection } from './SummarySection';
 export { default as TopBar } from './TopBar';
 export { default as VisitCard } from './VisitCard';
 export { default as WorkerCard } from './WorkerCard';

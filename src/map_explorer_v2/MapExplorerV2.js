@@ -3,7 +3,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { FONT_FAMILY, NAV_ITEMS, S } from './constants';
 import { light, dark } from './themes';
 import { TopBar, PatientPin } from './molecules';
-import { MapboxMap, PatientsPanel, WorkersPanel, SettingsPanel, SupportPanel, VisitsPanel, NotifyWorkersPanel, AddPatientPanel, AddVisitPanel, NotesPanel } from './organisms';
+import { MapboxMap, PatientsPanel, WorkersPanel, SettingsPanel, SupportPanel, VisitsPanel, NotifyWorkersPanel, AddPatientPanel, AddVisitPanel, NotesPanel, PatientSummaryPanel } from './organisms';
 import { NavChip, ThemeToggle } from './atoms';
 import { ToastProvider } from './contexts/ToastContext';
 import LoginScreen from './LoginScreen';
@@ -133,6 +133,9 @@ const MapExplorerV2Content = ({ isDark, toggleTheme, authenticated, authChecked,
         supportPanelOpen,
         openSupportPanel,
         closeSupportPanel,
+        patientSummaryPanelOpen,
+        openPatientSummaryPanel,
+        closePatientSummaryPanel,
         handlePatientCardClick,
         selectedPatient,
         patientVisits,
@@ -224,6 +227,9 @@ const MapExplorerV2Content = ({ isDark, toggleTheme, authenticated, authChecked,
                     {selectedPatient && (
                         <RightPanel>
                             <RightStack>
+                                <PatientSummaryPanel
+                                    onOpen={openPatientSummaryPanel}
+                                />
                                 <VisitsPanel
                                     patient={selectedPatient}
                                     visits={patientVisits}
@@ -270,6 +276,18 @@ const MapExplorerV2Content = ({ isDark, toggleTheme, authenticated, authChecked,
                         <Backdrop onClick={closeSupportPanel}>
                             <ModalCard onClick={(e) => e.stopPropagation()}>
                                 <SupportPanel onClose={closeSupportPanel} />
+                            </ModalCard>
+                        </Backdrop>
+                    )}
+                    {patientSummaryPanelOpen && selectedPatient && (
+                        <Backdrop onClick={closePatientSummaryPanel}>
+                            <ModalCard onClick={(e) => e.stopPropagation()}>
+                                <PatientSummaryPanel
+                                    patientId={selectedPatient.id}
+                                    patient={selectedPatient}
+                                    visits={patientVisits}
+                                    onClose={closePatientSummaryPanel}
+                                />
                             </ModalCard>
                         </Backdrop>
                     )}

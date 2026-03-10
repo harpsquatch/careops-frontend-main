@@ -38,7 +38,7 @@ const LeftPanel = styled.div`
 
     width: auto;
     max-height: 100vh;
-    padding: 80px ${S.sm} ${S.sm} ${S.sm};   /* 80px top to clear the TopBar */
+    padding: 80px ${S.sm} ${S.sm} ${S.lg};   /* 80px top to clear the TopBar, 16px left padding */
 
     & > * {
         pointer-events: auto;

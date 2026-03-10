@@ -50,12 +50,6 @@ const StatusBadge = styled(Badge)`
     flex-shrink: 0;
 `;
 
-const HeroBlock = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${S.sm};
-`;
-
 const HeroText = styled(BodyText)`
     font-size: ${F.md};
     font-weight: ${W.medium};

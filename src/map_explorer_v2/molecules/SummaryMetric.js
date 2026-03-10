@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FONT_FAMILY, F, S, W } from '../constants';
+import { F, S, W } from '../constants';
 import BodyText from '../atoms/BodyText';
 import MutedText from '../atoms/MutedText';
 
